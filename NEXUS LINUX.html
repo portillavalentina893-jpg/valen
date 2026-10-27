@@ -1,0 +1,917 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NEXUS LINUX</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Chakra+Petch:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Concepto: consola de mando futurista. Hero con terminal viva, secciones como módulos de datos sobre una red de circuitos animada. Una sola apariencia oscura a propósito. */
+:root{
+  --bg:#04060f; --bg2:#0a1030; --panel:rgba(11,18,46,.78); --panel2:rgba(16,26,64,.7);
+  --line:rgba(90,150,255,.22); --line2:rgba(34,228,255,.45);
+  --blue:#3a82ff; --cyan:#22e4ff; --violet:#a85cff;
+  --text:#e2eaff; --muted:#93a4cc; --dim:#62729c;
+  --ok:#3ef0a6; --warn:#ffbd4a; --bad:#ff5f7e;
+  --f-display:'Orbitron','Eurostile','Arial Black',sans-serif;
+  --f-body:'Chakra Petch','Segoe UI',system-ui,-apple-system,sans-serif;
+  --f-mono:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+#aurora{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(900px 500px at 12% -5%,rgba(58,130,255,.22),transparent 60%),
+  radial-gradient(800px 520px at 95% 10%,rgba(168,92,255,.18),transparent 60%),
+  radial-gradient(900px 600px at 50% 110%,rgba(34,228,255,.10),transparent 60%)}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
+main,header,footer{position:relative;z-index:1}
+.in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0 0 .8em}
+a{color:var(--cyan)}
+code{font-family:var(--f-mono);font-size:.88em;color:var(--cyan);background:rgba(34,228,255,.08);border:1px solid rgba(34,228,255,.18);padding:.05em .4em;border-radius:5px;overflow-wrap:anywhere}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+svg.i{width:1.2em;height:1.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(4,6,15,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .in{display:flex;align-items:center;gap:14px;min-height:56px}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:900;letter-spacing:.14em;font-size:.95rem;white-space:nowrap;color:var(--text);text-decoration:none;background:none;border:0;padding:0}
+.logo svg{color:var(--cyan);filter:drop-shadow(0 0 6px var(--cyan))}
+.logo b{color:var(--cyan);font-weight:900}
+nav{display:flex;gap:2px;overflow-x:auto;min-width:0;flex:1;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:0;color:var(--muted);font-size:.86rem;font-weight:500;padding:.55em .8em;border-radius:8px;white-space:nowrap;letter-spacing:.04em}
+nav button:hover{color:var(--text)}
+nav button.on{color:var(--cyan);background:rgba(34,228,255,.1);box-shadow:inset 0 -2px 0 var(--cyan)}
+.pill{font-family:var(--f-mono);font-size:.75rem;color:var(--cyan);border:1px solid var(--line2);border-radius:99px;padding:.2em .7em;white-space:nowrap}
+.bar{height:3px;background:rgba(90,150,255,.14)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--violet));box-shadow:0 0 12px var(--cyan);transition:width .5s ease}
+
+/* hero */
+.hero{padding-block:clamp(36px,7vw,84px) 40px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
+.eyebrow{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.2em;color:var(--cyan);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.brand{font-weight:900;font-size:clamp(2.3rem,8.4vw,4.9rem);letter-spacing:.06em;line-height:1;background:linear-gradient(95deg,var(--cyan) 5%,var(--blue) 48%,var(--violet) 95%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(58,130,255,.55));overflow-wrap:anywhere}
+.lead{font-size:clamp(1rem,2.4vw,1.2rem);color:var(--muted);max-width:34em;margin:20px 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:1rem;letter-spacing:.04em;border-radius:10px;padding:.8em 1.3em;border:1px solid var(--line2);color:var(--text);background:rgba(34,228,255,.06);transition:transform .2s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(34,228,255,.35);background:rgba(34,228,255,.14)}
+.btn.p{background:linear-gradient(95deg,var(--blue),var(--violet));border-color:transparent;box-shadow:0 0 22px rgba(120,100,255,.4)}
+.btn.p:hover{box-shadow:0 0 30px rgba(168,92,255,.7)}
+.btn.f{border-color:rgba(168,92,255,.6);background:rgba(168,92,255,.1)}
+.btn.f:hover{box-shadow:0 0 22px rgba(168,92,255,.5);background:rgba(168,92,255,.2)}
+.prog{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:14px 16px;max-width:460px}
+.prog-h{display:flex;justify-content:space-between;gap:10px;font-size:.88rem;color:var(--muted);margin-bottom:8px}
+.prog-h b{color:var(--cyan);font-family:var(--f-mono)}
+.prog .bar{border-radius:99px;overflow:hidden;height:6px}
+.prog-s{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-family:var(--f-mono);font-size:.74rem;color:var(--dim)}
+.vis{position:relative;padding:22px 18px 30px}
+.chip-ico{position:absolute;width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:var(--panel2);border:1px solid var(--line2);box-shadow:0 0 18px rgba(58,130,255,.35);animation:fl 5s ease-in-out infinite;z-index:2}
+.chip-ico svg{width:26px;height:26px}
+.chip-ico:nth-of-type(1){top:-4px;left:-2px;color:var(--cyan)}
+.chip-ico:nth-of-type(2){top:6px;right:-4px;color:var(--violet);animation-delay:-1.4s}
+.chip-ico:nth-of-type(3){bottom:-6px;left:10%;color:var(--blue);animation-delay:-2.6s}
+.chip-ico:nth-of-type(4){bottom:2px;right:6%;color:var(--ok);animation-delay:-3.4s}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero .rise{animation:rise .8s both}
+.hero .rise:nth-child(2){animation-delay:.1s}.hero .rise:nth-child(3){animation-delay:.2s}.hero .rise:nth-child(4){animation-delay:.3s}
+
+/* terminal */
+.term{border:1px solid var(--line2);border-radius:12px;background:rgba(3,6,18,.92);box-shadow:0 0 30px rgba(58,130,255,.18),inset 0 0 40px rgba(34,228,255,.03);overflow:hidden;min-width:0}
+.term-bar{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(58,130,255,.14),rgba(168,92,255,.1));flex-wrap:wrap}
+.term-bar>i{width:10px;height:10px;border-radius:50%;background:var(--bad)}
+.term-bar>i:nth-child(2){background:var(--warn)}.term-bar>i:nth-child(3){background:var(--ok)}
+.term-bar>span{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);margin-left:6px;flex:1;min-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term-act{display:flex;gap:6px;flex-wrap:wrap}
+.term-act button,.cp{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:.72rem;color:var(--cyan);background:rgba(34,228,255,.08);border:1px solid rgba(34,228,255,.3);border-radius:7px;padding:.35em .7em}
+.term-act button:hover,.cp:hover{background:rgba(34,228,255,.2)}
+.term-act button.ok,.cp.ok{color:var(--ok);border-color:var(--ok)}
+.term-body{margin:0;padding:14px 16px;font-family:var(--f-mono);font-size:.8rem;line-height:1.65;overflow-x:auto;max-height:420px;overflow-y:auto;color:#c6d6ff;white-space:pre}
+.term-body .pr{color:var(--ok)}.term-body .pc{color:var(--blue)}.term-body .c{color:#fff}
+.term-body .cm{color:var(--dim)}.term-body .er{color:var(--bad)}.term-body .wr{color:var(--warn)}.term-body .gt{color:var(--cyan)}.term-body .sc{color:var(--ok)}
+.term-body.hero-t{min-height:230px}
+.cur::after{content:"▌";color:var(--cyan);animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.cmd{display:flex;align-items:center;gap:10px;justify-content:space-between;border:1px solid var(--line);background:rgba(3,6,18,.8);border-radius:9px;padding:8px 10px 8px 14px;margin:8px 0}
+.cmd code{background:none;border:0;padding:0;font-size:.86rem;color:#fff;min-width:0;overflow-x:auto;white-space:nowrap}
+.cmd code::before{content:"$ ";color:var(--ok)}
+
+/* sections */
+section{padding-block:56px 20px;scroll-margin-top:70px}
+.sh{display:flex;gap:16px;align-items:flex-start;margin-bottom:22px}
+.sh-n{font-family:var(--f-display);font-weight:900;font-size:.8rem;letter-spacing:.2em;color:var(--bg);background:var(--cyan);padding:.35em .7em;border-radius:4px;box-shadow:0 0 14px var(--cyan);white-space:nowrap;margin-top:.4em}
+.sh.v .sh-n{background:var(--violet);box-shadow:0 0 14px var(--violet)}
+.sh h2{font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:.04em}
+.sh p{color:var(--muted);margin:8px 0 0;max-width:46em}
+.idx{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}
+.idx button{font-family:var(--f-mono);font-size:.76rem;color:var(--muted);background:rgba(11,18,46,.7);border:1px solid var(--line);border-radius:99px;padding:.4em .85em;display:inline-flex;gap:6px;align-items:center}
+.idx button:hover{color:var(--text);border-color:var(--line2)}
+.idx button.d{color:var(--ok);border-color:rgba(62,240,166,.5)}
+.idx button.d::before{content:"✓"}
+.lessons{display:grid;gap:18px}
+.card{position:relative;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:10px;padding:clamp(16px,3vw,26px);transition:border-color .25s,box-shadow .25s,transform .25s;scroll-margin-top:76px;min-width:0}
+.card::before,.card::after{content:"";position:absolute;width:16px;height:16px;border:2px solid var(--cyan);pointer-events:none;opacity:.8}
+.card::before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-top-left-radius:10px}
+.card::after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-bottom-right-radius:10px}
+.v-theme .card::before,.v-theme .card::after{border-color:var(--violet)}
+.card:hover{border-color:var(--line2);box-shadow:0 0 28px rgba(58,130,255,.2);transform:translateY(-2px)}
+.card.done{border-color:rgba(62,240,166,.4)}
+.card-h{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:var(--cyan);background:rgba(34,228,255,.08);border:1px solid rgba(34,228,255,.35);box-shadow:0 0 14px rgba(34,228,255,.2);flex:none}
+.ico svg{width:24px;height:24px}
+.v-theme .ico{color:var(--violet);background:rgba(168,92,255,.1);border-color:rgba(168,92,255,.45);box-shadow:0 0 14px rgba(168,92,255,.25)}
+.kick{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.card h3{font-size:clamp(1.05rem,3.2vw,1.35rem);letter-spacing:.03em}
+.card-b{color:#c9d6f5}
+.card-b ul{padding-left:1.2em;margin:.4em 0 .8em}
+.card-b li{margin:.25em 0}
+.card-b strong{color:#fff}
+.tip{display:flex;gap:10px;border:1px solid rgba(255,189,74,.4);background:rgba(255,189,74,.07);border-radius:8px;padding:10px 14px;margin:14px 0 0;font-size:.93rem}
+.tip svg{color:var(--warn);margin-top:.2em}
+.tip.i{border-color:rgba(34,228,255,.4);background:rgba(34,228,255,.06)}.tip.i svg{color:var(--cyan)}
+.tip.g{border-color:rgba(62,240,166,.4);background:rgba(62,240,166,.06)}.tip.g svg{color:var(--ok)}
+.card .term{margin-top:14px}
+.card-f{display:flex;justify-content:flex-end;margin-top:16px}
+.mark{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:var(--muted);background:none;border:1px solid var(--line);border-radius:8px;padding:.45em .9em}
+.mark:hover{color:var(--text);border-color:var(--line2)}
+.mark.on{color:var(--ok);border-color:var(--ok);background:rgba(62,240,166,.08)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.pc{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:rgba(6,12,32,.7)}
+.pc h4{font-size:.95rem;letter-spacing:.08em;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.pc.pro h4{color:var(--ok)}.pc.con h4{color:var(--bad)}
+.pc ul{margin:0;padding-left:1.1em}.pc li{margin:.35em 0}
+
+/* visuals */
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;justify-content:center;margin:16px 0 4px}
+.fs{flex:1 1 118px;max-width:170px;text-align:center;border:1px solid var(--line2);background:rgba(8,16,44,.8);border-radius:10px;padding:12px 8px}
+.fs .ico{margin:0 auto 8px}
+.fs b{display:block;font-family:var(--f-display);font-size:.78rem;letter-spacing:.06em}
+.fs small{display:block;color:var(--muted);font-size:.76rem;line-height:1.35;margin-top:3px}
+.ar{align-self:center;color:var(--cyan);display:grid;place-items:center;animation:pu 1.6s ease-in-out infinite}
+.ar svg{width:22px;height:22px}
+@keyframes pu{50%{transform:translateX(4px);opacity:.5}}
+@media(max-width:700px){.ar svg{transform:rotate(90deg)}.ar{flex-basis:100%;animation:none}.fs{max-width:none;flex-basis:100%;display:grid;grid-template-columns:46px 1fr;text-align:left;gap:0 12px;align-items:center}.fs .ico{margin:0;grid-row:span 2}}
+.tree{font-family:var(--f-mono);font-size:.84rem;margin:14px 0 0;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:rgba(3,6,18,.7);overflow-x:auto}
+.tree ul{list-style:none;margin:0;padding-left:20px;border-left:1px dashed var(--line2)}
+.tree>ul{border:0;padding:0}
+.tree li{position:relative;padding:3px 0 3px 14px;white-space:nowrap}
+.tree li::before{content:"";position:absolute;left:0;top:14px;width:10px;border-top:1px dashed var(--line2)}
+.tree>ul>li{padding-left:0}.tree>ul>li::before{display:none}
+.tree .a{color:var(--cyan)}.tree .b{color:var(--violet)}.tree .m{color:var(--dim)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.ch{border:1px solid var(--line2);border-radius:8px;padding:6px 11px;font-size:.84rem;background:rgba(8,16,44,.8)}
+.ch b{font-family:var(--f-mono);color:var(--cyan);font-weight:500}
+.layers{display:grid;gap:8px;margin:16px 0 4px;max-width:560px;margin-inline:auto}
+.ly{border-radius:9px;padding:11px 14px;text-align:center;font-size:.9rem;border:1px solid;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.ly b{font-family:var(--f-display);font-size:.8rem;letter-spacing:.05em}
+.ly small{color:var(--muted)}
+.ly.l1{border-color:rgba(168,92,255,.7);background:rgba(168,92,255,.12)}
+.ly.l2{border-color:rgba(58,130,255,.7);background:rgba(58,130,255,.12)}
+.ly.l3{border-color:rgba(34,228,255,.6);background:rgba(34,228,255,.08);border-style:dashed}
+.ly.l4{border-color:rgba(147,164,204,.5);background:rgba(147,164,204,.08)}
+.sbx{border:2px dashed var(--violet);border-radius:14px;padding:14px;margin:16px auto 4px;max-width:620px;position:relative;box-shadow:0 0 22px rgba(168,92,255,.18)}
+.sbx>em{position:absolute;top:-11px;left:16px;background:var(--bg);padding:0 8px;font-style:normal;font-family:var(--f-mono);font-size:.72rem;color:var(--violet);letter-spacing:.12em}
+.sbx-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+.sb{border:1px solid var(--line2);border-radius:9px;padding:10px 12px;font-size:.84rem;text-align:center;background:rgba(8,16,44,.8);flex:1 1 120px}
+.sb.x{border-color:rgba(255,95,126,.6);color:#ffc2cd}
+.sb.o{border-color:rgba(62,240,166,.6)}
+.portal{margin:10px auto 0;text-align:center;font-family:var(--f-mono);font-size:.76rem;color:var(--cyan)}
+.tbl{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:10px}
+.tbl table{border-collapse:collapse;width:100%;min-width:480px;font-size:.88rem}
+.tbl th,.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-family:var(--f-mono);font-weight:500;color:var(--cyan);background:rgba(34,228,255,.06);font-size:.78rem;letter-spacing:.06em}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{white-space:nowrap}
+
+/* errores */
+.errs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;margin-top:6px}
+.err{border:1px solid rgba(255,95,126,.35);border-radius:10px;padding:14px 16px;background:rgba(40,8,20,.35);min-width:0}
+.err h4{font-family:var(--f-mono);font-size:.8rem;font-weight:500;color:var(--bad);overflow-wrap:anywhere;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
+.err p{font-size:.92rem;color:#d3dcf5;margin-bottom:6px}
+
+/* quiz */
+.quiz{border:1px solid var(--line2);border-radius:14px;background:var(--panel);padding:clamp(16px,3.5vw,32px);max-width:820px;margin:0 auto;box-shadow:0 0 36px rgba(58,130,255,.16)}
+.q-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--f-mono);font-size:.8rem;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}
+.q-top b{color:var(--cyan)}
+.dots{display:flex;gap:5px;margin-bottom:18px}
+.dots i{flex:1;height:5px;border-radius:3px;background:rgba(90,150,255,.18)}
+.dots i.c{background:var(--ok)}.dots i.w{background:var(--bad)}.dots i.n{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.q-t{font-family:var(--f-body);font-weight:600;font-size:clamp(1.1rem,3.4vw,1.4rem);line-height:1.4;margin-bottom:18px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;width:100%;color:var(--text);background:rgba(8,16,44,.8);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:1rem;transition:border-color .2s,background .2s,transform .15s}
+.opt:hover:not(:disabled){border-color:var(--line2);background:rgba(34,228,255,.08);transform:translateX(3px)}
+.opt .l{font-family:var(--f-mono);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:rgba(34,228,255,.1);color:var(--cyan);font-size:.85rem;flex:none}
+.opt .tx{min-width:0;overflow-wrap:anywhere}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:rgba(62,240,166,.12)}.opt.ok .l{background:var(--ok);color:var(--bg)}
+.opt.no{border-color:var(--bad);background:rgba(255,95,126,.12)}.opt.no .l{background:var(--bad);color:var(--bg)}
+.opt.dim{opacity:.55}
+.fb{margin-top:16px;border-radius:10px;padding:12px 16px;border:1px solid;font-size:.95rem}
+.fb.ok{border-color:rgba(62,240,166,.5);background:rgba(62,240,166,.07)}.fb.no{border-color:rgba(255,95,126,.5);background:rgba(255,95,126,.07)}
+.fb b{display:block;margin-bottom:3px}
+.q-nav{display:flex;justify-content:flex-end;margin-top:18px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.res{text-align:center}
+.ring{width:170px;height:170px;margin:6px auto 14px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10}
+.ring .bgc{stroke:rgba(90,150,255,.18)}
+.ring .fgc{stroke:url(#rg);stroke-linecap:round;transition:stroke-dashoffset 1.2s ease;filter:drop-shadow(0 0 6px var(--cyan))}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:2.6rem}
+.ring .num small{display:block;font-size:.75rem;color:var(--muted);font-family:var(--f-mono);font-weight:400;text-align:center;margin-top:-6px}
+.res h3{font-size:1.3rem;margin-bottom:6px}
+.res p{color:var(--muted)}
+.rev{text-align:left;display:grid;gap:8px;margin:18px 0}
+.rv{border:1px solid var(--line);border-radius:9px;padding:10px 13px;font-size:.9rem;background:rgba(6,12,32,.7)}
+.rv.ok{border-color:rgba(62,240,166,.4)}.rv.no{border-color:rgba(255,95,126,.4)}
+.rv b{display:block;margin-bottom:2px}.rv span{color:var(--muted)}
+.res .cta{justify-content:center;margin:0}
+
+/* comparar */
+.vs{display:grid;gap:8px}
+.vr{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px}
+.vr>div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.9rem;background:rgba(8,14,38,.72);min-width:0}
+.vr .k{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);display:flex;align-items:center}
+.vr .a{border-color:rgba(34,228,255,.35)}.vr .f{border-color:rgba(168,92,255,.4)}
+.vh .a,.vh .f{font-family:var(--f-display);font-size:.9rem;letter-spacing:.1em;text-align:center;font-weight:700}
+.vh .a{color:var(--cyan);background:rgba(34,228,255,.1)}.vh .f{color:var(--violet);background:rgba(168,92,255,.12)}
+.vr .tag{display:none}
+@media(max-width:700px){.vr{grid-template-columns:1fr}.vh{display:none}.vr .tag{display:block;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;margin-bottom:3px}.vr .a .tag{color:var(--cyan)}.vr .f .tag{color:var(--violet)}.vr .k{background:rgba(90,150,255,.1);color:var(--text)}}
+.meters{display:grid;gap:14px;margin-top:6px}
+.mt h4{font-family:var(--f-body);font-size:.92rem;font-weight:500;margin-bottom:6px}
+.mb{display:grid;grid-template-columns:70px 1fr 34px;gap:8px;align-items:center;font-family:var(--f-mono);font-size:.74rem;margin:3px 0}
+.mb .tr{height:9px;border-radius:5px;background:rgba(90,150,255,.14);overflow:hidden}
+.mb .tr i{display:block;height:100%;border-radius:5px;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.mb.a .tr i{background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 10px var(--cyan)}
+.mb.f .tr i{background:linear-gradient(90deg,var(--blue),var(--violet));box-shadow:0 0 10px var(--violet)}
+.mb.a{color:var(--cyan)}.mb.f{color:var(--violet)}
+.note{color:var(--dim);font-size:.82rem;font-family:var(--f-mono);margin-top:12px}
+
+/* glosario */
+.gs{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:0 14px;background:rgba(6,12,32,.8);margin-bottom:16px;max-width:520px}
+.gs svg{color:var(--cyan)}
+.gs input{flex:1;min-width:0;background:none;border:0;color:var(--text);font:inherit;padding:12px 0;outline:none}
+.gs:focus-within{box-shadow:0 0 18px rgba(34,228,255,.3)}
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.gi{border:1px solid var(--line);border-radius:10px;padding:13px 15px;background:var(--panel);min-width:0}
+.gi dt{font-family:var(--f-mono);font-weight:700;color:var(--cyan);font-size:.88rem;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px}
+.gi dt small{color:var(--dim);font-weight:400;letter-spacing:.1em}
+.gi.fp dt{color:var(--violet)}
+.gi dd{margin:0;font-size:.9rem;color:#c9d6f5}
+.empty{color:var(--muted);padding:20px 0}
+
+/* final */
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.sum .card{transform:none}
+.cheat{margin-top:20px}
+footer{padding-block:40px 60px;margin-top:40px;border-top:1px solid var(--line);color:var(--dim);font-size:.85rem;text-align:center;background:rgba(3,5,14,.6)}
+footer b{font-family:var(--f-display);letter-spacing:.14em;color:var(--muted)}
+.rst{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:.5em 1em;font-size:.82rem;margin-top:14px}
+.rst:hover{color:var(--bad);border-color:var(--bad)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--bg2);border:1px solid var(--ok);color:var(--ok);padding:.6em 1.1em;border-radius:99px;font-family:var(--f-mono);font-size:.82rem;opacity:0;transition:.3s;z-index:40;pointer-events:none;max-width:90vw;text-align:center}
+.toast.s{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.vis{max-width:560px;width:100%;margin:0 auto}.logo span{display:none}.top .in{gap:8px}}
+@media(max-width:520px){.pill{display:none}.sh{flex-direction:column;gap:8px}.chip-ico{width:44px;height:44px}.chip-ico svg{width:22px;height:22px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div id="aurora"></div>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header class="top">
+  <div class="in">
+    <button class="logo" data-go="inicio" aria-label="NEXUS LINUX, ir al inicio"><span id="logoIco"></span><span>NEXUS<b>LINUX</b></span></button>
+    <nav aria-label="Navegación principal" id="nav">
+      <button data-go="inicio">Inicio</button>
+      <button data-go="apt">APT</button>
+      <button data-go="quiz">Quiz</button>
+      <button data-go="flatpak">Flatpak</button>
+      <button data-go="comparar">Comparar</button>
+      <button data-go="glosario">Glosario</button>
+      <button data-go="fin">Final</button>
+    </nav>
+    <span class="pill" id="pillP">0%</span>
+  </div>
+  <div class="bar" role="progressbar" aria-label="Progreso general" aria-valuemin="0" aria-valuemax="100" id="barWrap"><i id="barTop"></i></div>
+</header>
+
+<main>
+<section id="inicio" class="hero" style="padding-top:clamp(36px,7vw,84px)">
+  <div class="in hero-grid">
+    <div>
+      <div class="eyebrow rise">Academia de paquetes · Debian y Ubuntu</div>
+      <h1 class="brand rise">NEXUS LINUX</h1>
+      <p class="lead rise">Aprende a instalar, actualizar y eliminar software en Linux con dos herramientas: <strong>APT</strong>, el gestor clásico de Debian y Ubuntu, y <strong>Flatpak</strong>, el sistema moderno de aplicaciones aisladas. Todo con terminales simuladas, ejemplos y un quiz al final.</p>
+      <div class="cta rise">
+        <button class="btn p" data-go="apt"><span data-i="term"></span> Entrar a APT</button>
+        <button class="btn f" data-go="flatpak"><span data-i="box"></span> Entrar a Flatpak</button>
+      </div>
+      <div class="prog rise" aria-live="polite">
+        <div class="prog-h"><span>Tu progreso</span><b id="progTxt">0 de 0</b></div>
+        <div class="bar"><i id="barHero"></i></div>
+        <div class="prog-s"><span id="pA">APT 0/0</span><span id="pQ">Quiz pendiente</span><span id="pF">Flatpak 0/0</span></div>
+      </div>
+    </div>
+    <div class="vis">
+      <div class="chip-ico" data-i="globe"></div><div class="chip-ico" data-i="music"></div><div class="chip-ico" data-i="code"></div><div class="chip-ico" data-i="image"></div>
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>usuario@nexus: ~ (simulación)</span></div>
+        <pre class="term-body hero-t cur" id="heroTerm" aria-label="Terminal simulada"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="apt" class="v-theme-no">
+  <div class="in">
+    <div class="sh"><span class="sh-n">TEMA 1</span><div><h2>APT</h2><p>Advanced Package Tool: el gestor de paquetes de Debian, Ubuntu y distribuciones derivadas. Recorre los conceptos, los diez comandos principales, una práctica completa y los errores más comunes.</p></div></div>
+    <div class="idx" id="idxApt"></div>
+    <div class="lessons" id="lessApt"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="in">
+    <div class="sh"><span class="sh-n">QUIZ</span><div><h2>Pon a prueba APT</h2><p>10 preguntas, cuatro opciones cada una. Cada acierto vale 10 puntos, para un máximo de 100. Verás la explicación de cada respuesta.</p></div></div>
+    <div class="quiz" id="quizBox"></div>
+  </div>
+</section>
+
+<section id="flatpak" class="v-theme">
+  <div class="in">
+    <div class="sh v"><span class="sh-n">TEMA 2</span><div><h2>FLATPAK</h2><p>Aplicaciones empaquetadas con sus propias dependencias y ejecutadas en un sandbox. Instalación en Debian y Ubuntu, los nueve comandos básicos, runtimes, permisos y una práctica paso a paso.</p></div></div>
+    <div class="idx" id="idxFp"></div>
+    <div class="lessons" id="lessFp"></div>
+  </div>
+</section>
+
+<section id="comparar">
+  <div class="in">
+    <div class="sh"><span class="sh-n">VERSUS</span><div><h2>APT frente a Flatpak</h2><p>No compiten: resuelven problemas distintos y conviven en el mismo equipo.</p></div></div>
+    <div class="card" style="transform:none">
+      <div class="vs" id="vs"></div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card" style="transform:none">
+        <h3 style="margin-bottom:6px">Valoración orientativa</h3>
+        <div class="meters" id="meters"></div>
+        <p class="note">Escala cualitativa de 0 a 100 para comparar tendencias. No es una medición.</p>
+      </div>
+      <div class="card" style="transform:none">
+        <h3 style="margin-bottom:10px">¿Cuál uso?</h3>
+        <div class="card-b">
+          <p><strong style="color:var(--cyan)">Usa APT</strong> para el sistema base, herramientas de terminal, servicios, controladores y todo lo que quieras integrado con tu distribución.</p>
+          <p><strong style="color:var(--violet)">Usa Flatpak</strong> para aplicaciones de escritorio que quieras en su última versión, con permisos controlados y sin depender de la versión de tu distro.</p>
+          <div class="tip g"><span data-i="check"></span><span>Lo habitual es combinarlos: APT para la base y Flatpak para las aplicaciones.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="glosario">
+  <div class="in">
+    <div class="sh"><span class="sh-n">GLOSARIO</span><div><h2>Términos clave</h2><p>Busca cualquier concepto de APT o Flatpak.</p></div></div>
+    <label class="gs"><span data-i="search"></span><input id="gq" type="search" placeholder="Buscar: sandbox, runtime, dpkg…" autocomplete="off" aria-label="Buscar en el glosario"></label>
+    <dl class="gl" id="gl"></dl>
+    <p class="empty" id="gEmpty" hidden>No hay términos que coincidan con la búsqueda.</p>
+  </div>
+</section>
+
+<section id="fin">
+  <div class="in">
+    <div class="sh"><span class="sh-n">FINAL</span><div><h2>Conclusión</h2><p>Ya conoces las dos formas principales de instalar software en Debian y Ubuntu.</p></div></div>
+    <div class="sum">
+      <div class="card v-c" style="transform:none"><div class="card-h"><div class="ico" data-i="term"></div><h3>Con APT</h3></div><div class="card-b"><ul><li>Actualiza índices con <code>update</code> antes de instalar.</li><li>Instala con <code>install</code> y quita con <code>remove</code> o <code>purge</code>.</li><li>Limpia dependencias huérfanas con <code>autoremove</code>.</li><li>Ante un error, lee el mensaje <code>E:</code> completo.</li></ul></div></div>
+      <div class="card v-theme" style="transform:none"><div class="card-h"><div class="ico" data-i="box"></div><h3>Con Flatpak</h3></div><div class="card-b"><ul><li>Añade Flathub como remoto una sola vez.</li><li>Instala por ID de aplicación, por ejemplo <code>org.videolan.VLC</code>.</li><li>Revisa y ajusta permisos de cada app.</li><li>Elimina runtimes sin uso con <code>uninstall --unused</code>.</li></ul></div></div>
+      <div class="card" style="transform:none"><div class="card-h"><div class="ico" data-i="shield"></div><h3>Buenas prácticas</h3></div><div class="card-b"><ul><li>Instala software solo de fuentes que conozcas.</li><li>Practica primero en una máquina virtual.</li><li>Mantén el sistema al día: <code>update</code> y <code>upgrade</code> cada semana.</li><li>Escribe los comandos tú mismo para memorizarlos.</li></ul></div></div>
+    </div>
+    <div class="card cheat" style="transform:none">
+      <h3 style="margin-bottom:6px">Chuleta rápida</h3>
+      <div class="grid2" id="cheat"></div>
+    </div>
+    <div class="cta" id="finCta" style="justify-content:center;margin-top:30px">
+      <button class="btn p" data-go="apt"><span data-i="refresh"></span> Repasar APT</button>
+      <button class="btn f" data-go="flatpak"><span data-i="refresh"></span> Repasar Flatpak</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="in">
+    <b>NEXUS LINUX</b><br>
+    Material educativo. Las terminales son simulaciones: la página no ejecuta ningún comando en tu equipo.<br>
+    Las salidas de ejemplo están simplificadas y pueden variar según tu versión y distribución.<br>
+    <button class="rst" id="reset">Reiniciar mi progreso</button>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var sleep=function(ms){return new Promise(function(r){setTimeout(r,ms)})};
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ICONOS */
+var P={
+box:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+term:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 10l3 2-3 2M12 15h5"/>',
+server:'<rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/>',
+shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/>',
+gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+layers:'<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
+download:'<path d="M12 4v11M7 11l5 5 5-5"/><path d="M4 20h16"/>',
+trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+search:'<circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',
+refresh:'<path d="M20 11a8 8 0 00-14-4L4 9"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0014 4l2-2"/><path d="M20 20v-5h-5"/>',
+play:'<path d="M7 4l13 8-13 8V4z"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+music:'<path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+code:'<path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/>',
+image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>',
+check:'<path d="M5 12l5 5 9-10"/>',
+copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/>',
+warn:'<path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18h.01"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.6-1A4.5 4.5 0 0117 18H7z"/>',
+key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z"/>'
+};
+function ic(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+(P[n]||'')+'</svg>'}
+function fillIcons(root){$$('[data-i]',root).forEach(function(e){if(!e.firstChild)e.innerHTML=ic(e.getAttribute('data-i'))})}
+
+/* COPIAR */
+var COPY=[];
+function reg(t){COPY.push(t);return COPY.length-1}
+var toastT;
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('s');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('s')},1800)}
+function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);return ok}
+function doCopy(btn,txt){
+  var done=function(ok){
+    var old=btn.getAttribute('data-l')||btn.innerHTML;if(!btn.getAttribute('data-l'))btn.setAttribute('data-l',old);
+    btn.classList.add('ok');btn.innerHTML=ic('check')+' '+(ok?'Copiado':'Selecciona y copia');toast(ok?'Copiado al portapapeles':'No se pudo copiar automáticamente');
+    setTimeout(function(){btn.classList.remove('ok');btn.innerHTML=old},1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){done(true)},function(){done(fallbackCopy(txt))})}
+  else done(fallbackCopy(txt));
+}
+
+/* TERMINAL */
+var PROMPT='<span class="pr">usuario@nexus</span><span class="pc">:~$ </span>';
+function cls(l){if(/^E:/.test(l))return 'er';if(/^W:/.test(l))return 'wr';if(/^(Hit|Get|Ign):/.test(l))return 'gt';if(/(Done|complete|Complete)\s*$/.test(l)||/^Setting up/.test(l))return 'sc';return ''}
+function lineHTML(l){
+  if(l.indexOf('$ ')===0)return '<div>'+PROMPT+'<span class="c">'+esc(l.slice(2))+'</span></div>';
+  if(l.indexOf('# ')===0)return '<div class="cm">'+esc(l)+'</div>';
+  return '<div class="'+cls(l)+'">'+(esc(l)||' ')+'</div>';
+}
+var TERMS=[];
+function termHTML(lines,title){
+  var id=TERMS.push(lines)-1;
+  var cmds=lines.filter(function(l){return l.indexOf('$ ')===0}).map(function(l){return l.slice(2)}).join('\n');
+  var cid=reg(cmds);
+  return '<div class="term"><div class="term-bar"><i></i><i></i><i></i><span>'+esc(title||'usuario@nexus: ~')+'</span><div class="term-act"><button type="button" data-sim="'+id+'">'+ic('play')+' Simular</button><button type="button" class="cpy" data-c="'+cid+'">'+ic('copy')+' Copiar comandos</button></div></div><pre class="term-body" id="tb'+id+'">'+lines.map(lineHTML).join('')+'</pre></div>';
+}
+function cmdHTML(c){var id=reg(c);return '<div class="cmd"><code>'+esc(c)+'</code><button type="button" class="cp" data-c="'+id+'">'+ic('copy')+' Copiar</button></div>'}
+async function simulate(body,lines,keepCursor){
+  var my=(body._run||0)+1;body._run=my;body.innerHTML='';
+  for(var i=0;i<lines.length;i++){
+    if(body._run!==my)return false;
+    var l=lines[i],d=document.createElement('div');body.appendChild(d);
+    if(l.indexOf('$ ')===0){
+      d.innerHTML=PROMPT;var sp=document.createElement('span');sp.className='c';d.appendChild(sp);var t=l.slice(2);
+      for(var k=0;k<t.length;k++){if(body._run!==my)return false;sp.textContent+=t[k];if(!reduce)await sleep(26)}
+      if(!reduce)await sleep(280);
+    }else{
+      d.className=l.indexOf('# ')===0?'cm':cls(l);d.textContent=l||' ';if(!reduce)await sleep(75);
+    }
+    body.scrollTop=body.scrollHeight;
+  }
+  return true;
+}
+
+/* DATOS DE LECCIONES */
+var VIS={
+aptFlow:function(){return '<div class="flow">'+
+ st('user','Tú','Escribes <code>apt install</code>')+ar()+st('gear','APT','Calcula qué hace falta')+ar()+st('server','Repositorio','Entrega los paquetes')+ar()+st('box','Paquetes .deb','Se descargan y verifican')+ar()+st('layers','dpkg','Los instala en el sistema')+'</div>'},
+repos:function(){return '<div class="chips">'+
+ [['main','Software libre oficial de la distribución'],['contrib','Libre, pero depende de software no libre'],['non-free','Software con licencia no libre'],['universe','Ubuntu: libre mantenido por la comunidad'],['multiverse','Ubuntu: software con restricciones'],['restricted','Ubuntu: controladores propietarios']].map(function(c){return '<div class="ch"><b>'+c[0]+'</b> · '+c[1]+'</div>'}).join('')+'</div>'},
+tree:function(){return '<div class="tree" aria-label="Árbol de dependencias de ejemplo"><ul><li><span class="a">vlc</span> <span class="m">← lo que pides instalar</span><ul><li><span class="b">vlc-plugin-base</span><ul><li>libvlc5</li><li>libavcodec</li></ul></li><li><span class="b">vlc-data</span></li><li><span class="b">libvlccore9</span><ul><li>libc6 <span class="m">(ya instalado)</span></li></ul></li></ul></li></ul></div><p class="note">Árbol ilustrativo y simplificado. Los nombres reales cambian según la versión.</p>'},
+fpLayers:function(){return '<div class="layers"><div class="ly l1">'+ic('box')+'<b>Tu aplicación</b><small>VLC, GIMP, Firefox…</small></div><div class="ly l2">'+ic('layers')+'<b>Runtime</b><small>librerías compartidas (Freedesktop, GNOME, KDE)</small></div><div class="ly l3">'+ic('lock')+'<b>Sandbox</b><small>bubblewrap + permisos + portales</small></div><div class="ly l4">'+ic('server')+'<b>Sistema anfitrión</b><small>Debian, Ubuntu, kernel y archivos</small></div></div>'},
+fpFlow:function(){return '<div class="flow">'+st('cloud','Flathub','Almacén de aplicaciones')+ar()+st('download','flatpak install','Descarga app y runtime')+ar()+st('layers','Instalación','Se guarda en /var/lib/flatpak')+ar()+st('lock','flatpak run','Arranca dentro del sandbox')+'</div>'},
+sandbox:function(){return '<div class="sbx"><em>SANDBOX</em><div class="sbx-row"><div class="sb">'+ic('box')+'<br>Aplicación</div><div class="sb o">'+ic('globe')+'<br>Red<br><small>permitida</small></div><div class="sb o">'+ic('image')+'<br>~/Imágenes<br><small>permitida</small></div><div class="sb x">'+ic('lock')+'<br>Resto de tu carpeta personal<br><small>bloqueado</small></div></div><div class="portal">↕ portales: la app pide un archivo y tú eliges cuál compartir</div></div>'},
+perms:function(){return '<div class="tbl"><table><thead><tr><th>Opción</th><th>Qué concede</th></tr></thead><tbody><tr><td><code>--share=network</code></td><td>Acceso a internet</td></tr><tr><td><code>--socket=wayland</code> / <code>x11</code></td><td>Mostrar ventanas en pantalla</td></tr><tr><td><code>--socket=pulseaudio</code></td><td>Reproducir y grabar audio</td></tr><tr><td><code>--device=dri</code></td><td>Aceleración gráfica (GPU)</td></tr><tr><td><code>--filesystem=home</code></td><td>Toda tu carpeta personal</td></tr><tr><td><code>--filesystem=~/Videos</code></td><td>Solo esa carpeta</td></tr></tbody></table></div>'}
+};
+function st(i,t,s){return '<div class="fs"><div class="ico">'+ic(i)+'</div><b>'+t+'</b><small>'+s+'</small></div>'}
+function ar(){return '<div class="ar">'+ic('arrow')+'</div>'}
+
+var LES=[];
+function L(o){LES.push(o)}
+
+/* ---------- APT ---------- */
+L({id:'a-que',t:'apt',icon:'term',kick:'Concepto',title:'¿Qué es APT y para qué sirve?',short:'Qué es',
+ html:'<p><strong>APT</strong> (<em>Advanced Package Tool</em>) es el gestor de paquetes de línea de comandos de Debian y de sus derivadas: Ubuntu, Linux Mint, Pop!_OS y otras. Sirve para <strong>instalar, actualizar, buscar y eliminar</strong> programas sin descargar nada a mano desde páginas web.</p><p><strong>Cómo funciona:</strong> APT consulta una lista de repositorios, descubre qué paquetes y dependencias necesitas, los descarga en formato <code>.deb</code>, comprueba su firma y le pasa la instalación a <code>dpkg</code>, la herramienta de bajo nivel que coloca los archivos en el sistema.</p>',
+ vis:'aptFlow',
+ tip:{k:'i',h:'<code>apt</code> es la interfaz pensada para personas: muestra barra de progreso y colores. <code>apt-get</code> y <code>apt-cache</code> son las herramientas clásicas, más estables en su salida y por eso preferidas en scripts.'}});
+
+L({id:'a-repo',t:'apt',icon:'server',kick:'Concepto',title:'Repositorios',short:'Repositorios',
+ html:'<p>Un <strong>repositorio</strong> es un servidor que guarda paquetes y un índice firmado que los describe. Tu sistema sabe a cuáles consultar gracias a <code>/etc/apt/sources.list</code> y a los archivos de la carpeta <code>/etc/apt/sources.list.d/</code>. En versiones recientes también verás archivos <code>.sources</code> con formato deb822.</p><p>Cada repositorio se divide en <strong>componentes</strong>:</p>',
+ vis:'repos',
+ term:['$ cat /etc/apt/sources.list','deb http://deb.debian.org/debian bookworm main contrib','deb http://deb.debian.org/debian-security bookworm-security main','deb http://deb.debian.org/debian bookworm-updates main','','$ apt policy htop','htop:','  Installed: (none)','  Candidate: 3.2.2-2','  Version table:','     3.2.2-2 500','        500 http://deb.debian.org/debian bookworm/main amd64 Packages'],
+ tip:{k:'',h:'Añade repositorios de terceros solo si confías en quien los mantiene: sus paquetes se instalan con permisos de administrador.'}});
+
+L({id:'a-dep',t:'apt',icon:'layers',kick:'Concepto',title:'Dependencias',short:'Dependencias',
+ html:'<p>Casi ningún programa viene solo: necesita <strong>bibliotecas y otros paquetes</strong> para funcionar. A esas necesidades se les llama <strong>dependencias</strong>. APT las resuelve por ti: calcula el árbol completo, descarga lo que falta y respeta las versiones compatibles.</p><p>Las dependencias se comparten: si dos programas usan la misma biblioteca, se instala una sola vez y se ahorra espacio.</p>',
+ vis:'tree',
+ cmds:['apt depends vlc','apt rdepends libvlc5'],
+ tip:{k:'i',h:'<code>apt depends</code> muestra de qué depende un paquete. <code>apt rdepends</code> muestra quién depende de él.'}});
+
+L({id:'a-update',t:'apt',icon:'refresh',kick:'Comando 1 de 10',title:'apt update',short:'update',
+ html:'<p>Descarga desde los repositorios la <strong>lista actualizada de paquetes</strong> y sus versiones. <strong>No instala ni actualiza nada</strong>: solo refresca el catálogo. Ejecútalo siempre antes de instalar o actualizar.</p>',
+ cmds:['sudo apt update'],
+ term:['$ sudo apt update','Hit:1 http://deb.debian.org/debian bookworm InRelease','Get:2 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]','Get:3 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]','Fetched 103 kB in 1s (118 kB/s)','Reading package lists... Done','Building dependency tree... Done','12 packages can be upgraded. Run \'apt list --upgradable\' to see them.'],
+ tip:{k:'',h:'Piénsalo como actualizar el menú de una tienda: ves qué hay de nuevo, pero todavía no compras nada.'}});
+
+L({id:'a-upgrade',t:'apt',icon:'bolt',kick:'Comando 2 de 10',title:'apt upgrade',short:'upgrade',
+ html:'<p>Actualiza todos los paquetes instalados a su <strong>versión más reciente disponible</strong>, sin eliminar ningún paquete ni instalar otros que obliguen a quitar algo. Es la actualización segura del día a día.</p>',
+ cmds:['sudo apt upgrade','sudo apt upgrade -y'],
+ term:['$ sudo apt upgrade','Reading package lists... Done','Calculating upgrade... Done','The following packages will be upgraded:','  curl libcurl4 openssl','3 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.','Need to get 2,312 kB of archives.','Do you want to continue? [Y/n] y','Setting up openssl ...','Setting up libcurl4 ...','Setting up curl ...'],
+ tip:{k:'',h:'La opción <code>-y</code> responde «sí» automáticamente. Úsala solo cuando hayas revisado qué se va a cambiar.'}});
+
+L({id:'a-full',t:'apt',icon:'gear',kick:'Comando 3 de 10',title:'apt full-upgrade',short:'full-upgrade',
+ html:'<p>Hace lo mismo que <code>upgrade</code>, pero <strong>puede instalar y eliminar paquetes</strong> si es necesario para completar la actualización, por ejemplo al cambiar un kernel o al renombrar una biblioteca. En versiones antiguas se llamaba <code>dist-upgrade</code>.</p>',
+ cmds:['sudo apt full-upgrade'],
+ term:['$ sudo apt full-upgrade','Calculating upgrade... Done','The following NEW packages will be installed:','  linux-image-6.1.0-nuevo','The following packages will be REMOVED:','  libfoo1','The following packages will be upgraded:','  linux-image-amd64 libbar2','2 upgraded, 1 newly installed, 1 to remove and 0 not upgraded.','Do you want to continue? [Y/n]'],
+ tip:{k:'',h:'Lee siempre la lista «will be REMOVED» antes de aceptar. Es la diferencia clave con <code>upgrade</code>.'}});
+
+L({id:'a-install',t:'apt',icon:'download',kick:'Comando 4 de 10',title:'apt install',short:'install',
+ html:'<p>Instala uno o varios paquetes <strong>junto con todas sus dependencias</strong>. Puedes indicar una versión concreta o instalar un archivo <code>.deb</code> descargado.</p>',
+ cmds:['sudo apt install vlc','sudo apt install git curl htop','sudo apt install ./programa.deb','sudo apt install --reinstall vlc'],
+ term:['$ sudo apt install vlc','Reading package lists... Done','Building dependency tree... Done','The following additional packages will be installed:','  libvlc5 libvlccore9 vlc-data vlc-plugin-base','The following NEW packages will be installed:','  libvlc5 libvlccore9 vlc vlc-data vlc-plugin-base','0 upgraded, 5 newly installed, 0 to remove and 0 not upgraded.','After this operation, 21.3 MB of additional disk space will be used.','Do you want to continue? [Y/n] y','Setting up vlc ...'],
+ tip:{k:'i',h:'Con <code>./programa.deb</code> (incluye el <code>./</code>) APT también resuelve las dependencias de un paquete local.'}});
+
+L({id:'a-remove',t:'apt',icon:'trash',kick:'Comando 5 de 10',title:'apt remove',short:'remove',
+ html:'<p>Desinstala un paquete pero <strong>conserva sus archivos de configuración</strong>. Si lo vuelves a instalar, tus ajustes siguen ahí.</p>',
+ cmds:['sudo apt remove vlc'],
+ term:['$ sudo apt remove vlc','The following packages will be REMOVED:','  vlc','0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.','After this operation, 3,100 kB disk space will be freed.','Do you want to continue? [Y/n] y','Removing vlc ...'],
+ tip:{k:'',h:'Las dependencias que instalaste con el programa siguen en el sistema. Se limpian con <code>autoremove</code>.'}});
+
+L({id:'a-purge',t:'apt',icon:'trash',kick:'Comando 6 de 10',title:'apt purge',short:'purge',
+ html:'<p>Elimina el paquete <strong>y también sus archivos de configuración</strong> del sistema. Es el borrado completo. No toca los datos personales de tu carpeta de usuario.</p>',
+ cmds:['sudo apt purge vlc','sudo apt purge --autoremove vlc'],
+ term:['$ sudo apt purge vlc','The following packages will be REMOVED:','  vlc*','Do you want to continue? [Y/n] y','Removing vlc ...','Purging configuration files for vlc ...'],
+ tip:{k:'i',h:'<strong>remove</strong> = quita el programa. <strong>purge</strong> = quita el programa y su configuración.'}});
+
+L({id:'a-auto',t:'apt',icon:'refresh',kick:'Comando 7 de 10',title:'apt autoremove',short:'autoremove',
+ html:'<p>Elimina las <strong>dependencias huérfanas</strong>: paquetes que se instalaron automáticamente para otro programa y que ya nadie necesita. Libera espacio y mantiene el sistema limpio.</p>',
+ cmds:['sudo apt autoremove','sudo apt autoremove --purge','sudo apt clean'],
+ term:['$ sudo apt autoremove','The following packages will be REMOVED:','  libvlc5 libvlccore9 vlc-data vlc-plugin-base','0 upgraded, 0 newly installed, 4 to remove and 0 not upgraded.','After this operation, 18.2 MB disk space will be freed.','Do you want to continue? [Y/n] y'],
+ tip:{k:'',h:'<code>apt clean</code> vacía la caché de archivos <code>.deb</code> descargados. Es otra forma segura de recuperar espacio.'}});
+
+L({id:'a-search',t:'apt',icon:'search',kick:'Comando 8 de 10',title:'apt search',short:'search',
+ html:'<p>Busca paquetes por <strong>nombre o descripción</strong>. Acepta expresiones regulares: <code>^htop</code> limita la búsqueda a nombres que empiezan por «htop».</p>',
+ cmds:['apt search editor','apt search ^htop'],
+ term:['$ apt search ^htop','Sorting... Done','Full Text Search... Done','htop/stable 3.2.2-2 amd64','  interactive processes viewer','','$ apt search "text editor" | head -4','Sorting... Done','Full Text Search... Done'],
+ tip:{k:'i',h:'No necesita <code>sudo</code>: solo lee el catálogo local. Si no encuentra nada reciente, ejecuta antes <code>apt update</code>.'}});
+
+L({id:'a-show',t:'apt',icon:'info',kick:'Comando 9 de 10',title:'apt show',short:'show',
+ html:'<p>Muestra la <strong>ficha completa</strong> de un paquete: versión, tamaño, dependencias, página web y descripción. Úsalo antes de instalar algo que no conoces.</p>',
+ cmds:['apt show htop'],
+ term:['$ apt show htop','Package: htop','Version: 3.2.2-2','Priority: optional','Section: utils','Installed-Size: 427 kB','Depends: libc6, libncursesw6, libtinfo6','Homepage: https://htop.dev/','Description: interactive processes viewer'],
+ tip:{k:'',h:'Fíjate en <code>Depends</code>: te dice qué más se instalará junto con el paquete.'}});
+
+L({id:'a-list',t:'apt',icon:'list',kick:'Comando 10 de 10',title:'apt list',short:'list',
+ html:'<p>Lista paquetes según el filtro que elijas: los <strong>instalados</strong>, los <strong>actualizables</strong> o todos los disponibles. Combínalo con <code>grep</code> para filtrar.</p>',
+ cmds:['apt list --installed','apt list --upgradable','apt list --installed | grep vlc'],
+ term:['$ apt list --upgradable','Listing... Done','curl/stable-security 7.88.1 amd64 [upgradable from: 7.88.0]','openssl/stable-security 3.0.15 amd64 [upgradable from: 3.0.14]','','$ apt list --installed | grep htop','htop/stable,now 3.2.2-2 amd64 [installed]'],
+ tip:{k:'i',h:'<code>dpkg -l</code> también lista paquetes instalados y es útil cuando <code>apt</code> no está disponible.'}});
+
+L({id:'a-prac',t:'apt',icon:'play',kick:'Práctica guiada',title:'Instalar y desinstalar un programa, paso a paso',short:'Práctica',
+ html:'<p>Vamos a instalar <strong>htop</strong>, un monitor de procesos, y después a quitarlo por completo.</p><ol><li><strong>Actualiza</strong> el catálogo con <code>update</code>.</li><li><strong>Busca</strong> el paquete y revisa su <strong>ficha</strong>.</li><li><strong>Instala</strong> y <strong>ejecútalo</strong>.</li><li><strong>Elimina</strong> con <code>purge</code> y limpia con <code>autoremove</code>.</li></ol><p>Pulsa <em>Simular</em> para verlo en acción.</p>',
+ term:['$ sudo apt update','Hit:1 http://deb.debian.org/debian bookworm InRelease','Reading package lists... Done','$ apt search ^htop','htop/stable 3.2.2-2 amd64','  interactive processes viewer','$ apt show htop | head -3','Package: htop','Version: 3.2.2-2','Priority: optional','$ sudo apt install htop','The following NEW packages will be installed:','  htop','Do you want to continue? [Y/n] y','Setting up htop ...','$ htop','# (se abre el monitor; pulsa q para salir)','$ sudo apt purge htop','Removing htop ...','Purging configuration files for htop ...','$ sudo apt autoremove','0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'],
+ tip:{k:'g',h:'Resultado: htop instalado, usado y eliminado sin dejar configuración ni dependencias sobrantes.'}});
+
+L({id:'a-pros',t:'apt',icon:'shield',kick:'Balance',title:'Ventajas y desventajas de APT',short:'Balance',
+ raw:'<div class="grid2"><div class="pc pro"><h4>'+ic('check')+' VENTAJAS</h4><ul><li>Integración total con el sistema y sus servicios.</li><li>Dependencias compartidas: menos espacio en disco.</li><li>Paquetes firmados y revisados por la distribución.</li><li>Actualizaciones de seguridad centralizadas con un solo comando.</li><li>Rápido y ligero; ideal para servidores.</li><li>Catálogo enorme de software.</li></ul></div><div class="pc con"><h4>'+ic('warn')+' DESVENTAJAS</h4><ul><li>Las versiones pueden ser antiguas en distribuciones estables.</li><li>Necesita permisos de administrador.</li><li>Solo funciona en Debian, Ubuntu y derivadas.</li><li>Repositorios de terceros pueden causar conflictos o riesgos.</li><li>Los programas no están aislados del sistema.</li><li>Un conflicto de dependencias puede bloquear una instalación.</li></ul></div></div>'});
+
+L({id:'a-err',t:'apt',icon:'warn',kick:'Solución de problemas',title:'Errores comunes y cómo resolverlos',short:'Errores',
+ html:'<p>La mayoría de los fallos tienen causa y solución conocidas. Lee el mensaje que empieza por <code>E:</code> antes de probar nada.</p>',
+ raw:'<div class="errs">'+[
+ ['E: Could not get lock /var/lib/dpkg/lock-frontend','Otro proceso (actualizador automático u otra terminal) está usando APT.','Espera unos minutos. Para ver quién lo usa:','ps aux | grep -i apt'],
+ ['E: Unable to locate package nombre','El nombre está mal escrito, el catálogo está desactualizado o falta un componente del repositorio.','Actualiza el catálogo y vuelve a buscar:','sudo apt update && apt search nombre'],
+ ['The following packages have unmet dependencies','Faltan dependencias o hay versiones en conflicto.','Pide a APT que repare lo pendiente:','sudo apt --fix-broken install'],
+ ['E: dpkg was interrupted, you must manually run dpkg --configure -a','Una instalación se cortó a medias.','Termina la configuración pendiente:','sudo dpkg --configure -a'],
+ ['W: GPG error … NO_PUBKEY XXXXXXXX','Falta la clave pública con la que se firma un repositorio.','Obtén la clave desde la web oficial del proyecto y guárdala en /etc/apt/keyrings/ referenciándola con signed-by. El método antiguo apt-key está obsoleto.',''],
+ ['Err: Temporary failure resolving / Failed to fetch','Sin conexión, problema de DNS o el servidor espejo no responde.','Comprueba tu conexión y reintenta:','ping -c 3 deb.debian.org'],
+ ['E: Could not open lock file … Permission denied','Ejecutaste APT sin permisos de administrador.','Antepón sudo a los comandos que modifican el sistema:','sudo apt install nombre'],
+ ['E: You don\'t have enough free space','El disco no tiene espacio para descargar o instalar.','Libera caché y paquetes sobrantes:','sudo apt clean && sudo apt autoremove']
+ ].map(function(e){return '<div class="err"><h4>'+ic('warn')+'<span>'+esc(e[0])+'</span></h4><p><strong>Causa:</strong> '+esc(e[1])+'</p><p>'+esc(e[2])+'</p>'+(e[3]?cmdHTML(e[3]):'')+'</div>'}).join('')+'</div>'});
+
+/* ---------- FLATPAK ---------- */
+L({id:'f-que',t:'fp',icon:'box',kick:'Concepto',title:'¿Qué es Flatpak y para qué sirve?',short:'Qué es',
+ html:'<p><strong>Flatpak</strong> es un sistema para distribuir y ejecutar aplicaciones de escritorio en <strong>casi cualquier distribución Linux</strong>. Cada aplicación viaja con lo que necesita y se ejecuta en un <strong>sandbox</strong> (entorno aislado) con permisos limitados.</p><p><strong>Sirve para</strong> tener aplicaciones recientes sin depender de la versión de tu distribución, y para controlar a qué puede acceder cada programa.</p><p><strong>Cómo funciona:</strong> descarga la aplicación y su <em>runtime</em> desde un remoto como Flathub, los guarda de forma eficiente con OSTree y arranca la app aislada con bubblewrap.</p>',
+ vis:'fpFlow',
+ tip:{k:'i',h:'Flatpak puede instalar a nivel de sistema (para todos los usuarios) o solo para tu usuario con <code>--user</code>.'}});
+
+L({id:'f-hub',t:'fp',icon:'cloud',kick:'Concepto',title:'Flathub',short:'Flathub',
+ html:'<p><strong>Flathub</strong> (<code>flathub.org</code>) es el repositorio principal de aplicaciones Flatpak: una tienda con miles de programas como navegadores, editores, juegos y herramientas de oficina. En Flatpak a estos repositorios se les llama <strong>remotos</strong> (<em>remotes</em>).</p><p>Cada aplicación tiene un <strong>ID único</strong> con formato de dominio invertido, por ejemplo <code>org.videolan.VLC</code>. Con ese ID se instala, se ejecuta y se desinstala.</p>',
+ tip:{k:'',h:'Busca la insignia de verificado en Flathub: indica que la publica su propio desarrollador.'}});
+
+L({id:'f-inst',t:'fp',icon:'download',kick:'Instalación',title:'Instalar Flatpak en Debian y Ubuntu',short:'Instalación',
+ html:'<p>Se instala con APT. Después añades Flathub y reinicias la sesión para que las aplicaciones aparezcan en el menú.</p>',
+ cmds:['sudo apt update','sudo apt install flatpak','flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo'],
+ term:['$ sudo apt update','Reading package lists... Done','$ sudo apt install flatpak','The following NEW packages will be installed:','  flatpak','Do you want to continue? [Y/n] y','Setting up flatpak ...','$ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo','$ flatpak remotes','Name    Options','flathub system','# Cierra sesión y vuelve a entrar (o reinicia)'],
+ tip:{k:'i',h:'Si quieres instalar desde la tienda gráfica: en GNOME, <code>sudo apt install gnome-software-plugin-flatpak</code>; en KDE Plasma, <code>sudo apt install plasma-discover-backend-flatpak</code>.'}});
+
+var FP=[
+ ['f-ver','refresh','Comando 1 de 9','flatpak --version','--version','<p>Muestra la versión instalada. Sirve para comprobar que Flatpak está listo.</p>',['flatpak --version'],['$ flatpak --version','Flatpak 1.14.10']],
+ ['f-rem','server','Comando 2 de 9','flatpak remotes','remotes','<p>Lista los <strong>remotos</strong> configurados, es decir, de dónde puede descargar aplicaciones. Con <code>-d</code> añade más detalle.</p>',['flatpak remotes','flatpak remotes -d'],['$ flatpak remotes','Name    Options','flathub system']],
+ ['f-sea','search','Comando 3 de 9','flatpak search','search','<p>Busca aplicaciones en los remotos. Devuelve el <strong>ID de aplicación</strong> que necesitas para instalar.</p>',['flatpak search vlc'],['$ flatpak search vlc','Name  Description               Application ID    Version Branch Remotes','VLC   Multimedia player          org.videolan.VLC  3.0.21  stable flathub']],
+ ['f-ins','download','Comando 4 de 9','flatpak install','install','<p>Descarga e instala una aplicación y, si hace falta, su runtime. Te muestra los <strong>permisos</strong> que pide antes de confirmar.</p>',['flatpak install flathub org.videolan.VLC','flatpak install --user flathub org.videolan.VLC'],['$ flatpak install flathub org.videolan.VLC','Looking for matches…','Required runtime for org.videolan.VLC found in remote flathub','Do you want to install it? [Y/n]: y','Installing… ████████████ 100%','Installation complete.']],
+ ['f-lis','list','Comando 5 de 9','flatpak list','list','<p>Muestra lo instalado. Con <code>--app</code> solo aplicaciones; con <code>--runtime</code> solo runtimes.</p>',['flatpak list','flatpak list --app'],['$ flatpak list --app','Name Application ID       Version Branch Installation','VLC  org.videolan.VLC    3.0.21  stable system']],
+ ['f-inf','info','Comando 6 de 9','flatpak info','info','<p>Muestra los datos de una aplicación instalada: origen, rama, runtime y tamaño. Con <code>--show-permissions</code> lista sus permisos.</p>',['flatpak info org.videolan.VLC','flatpak info --show-permissions org.videolan.VLC'],['$ flatpak info org.videolan.VLC','VLC - Multimedia player and streamer','        ID: org.videolan.VLC','       Ref: app/org.videolan.VLC/x86_64/stable','    Branch: stable','    Origin: flathub','   Runtime: org.kde.Platform/x86_64/6.x']],
+ ['f-run','play','Comando 7 de 9','flatpak run','run','<p>Ejecuta la aplicación desde la terminal. También aparece en el menú de aplicaciones tras reiniciar la sesión.</p>',['flatpak run org.videolan.VLC'],['$ flatpak run org.videolan.VLC','# se abre VLC dentro de su sandbox']],
+ ['f-upd','refresh','Comando 8 de 9','flatpak update','update','<p>Actualiza todas las aplicaciones y runtimes. Puedes indicar un ID para actualizar solo una.</p>',['flatpak update','flatpak update org.videolan.VLC'],['$ flatpak update','Looking for updates…','        ID                  Branch Op Remote  Download','1.      org.videolan.VLC    stable u  flathub 18.2 MB','Proceed with these changes to the system? [Y/n]: y','Updates complete.']],
+ ['f-uni','trash','Comando 9 de 9','flatpak uninstall','uninstall','<p>Desinstala una aplicación. Con <code>--unused</code> elimina los runtimes que ya nadie usa, y con <code>--delete-data</code> borra también sus datos.</p>',['flatpak uninstall org.videolan.VLC','flatpak uninstall --unused'],['$ flatpak uninstall org.videolan.VLC','Uninstall complete.','$ flatpak uninstall --unused','Nothing unused to uninstall']]
+];
+FP.forEach(function(c){L({id:c[0],t:'fp',icon:c[1],kick:c[2],title:c[3],short:c[4],html:c[5],cmds:c[6],term:c[7]})});
+
+L({id:'f-run2',t:'fp',icon:'layers',kick:'Concepto',title:'Runtimes',short:'Runtimes',
+ html:'<p>Un <strong>runtime</strong> es un conjunto de librerías base que varias aplicaciones comparten. Hay tres familias principales: <code>org.freedesktop.Platform</code>, <code>org.gnome.Platform</code> y <code>org.kde.Platform</code>.</p><ul><li>Cada aplicación declara qué runtime y qué versión necesita.</li><li>Se descargan una sola vez y se reutilizan entre aplicaciones.</li><li>Esto explica por qué la primera instalación pesa más que las siguientes.</li><li>Existen también <strong>SDK</strong>, que añaden herramientas para desarrolladores.</li></ul>',
+ vis:'fpLayers',
+ cmds:['flatpak list --runtime'],
+ tip:{k:'i',h:'La app trae lo específico; el runtime aporta lo común; el sistema anfitrión solo aporta el kernel y el hardware.'}});
+
+L({id:'f-sand',t:'fp',icon:'lock',kick:'Seguridad',title:'Sandbox y permisos',short:'Sandbox',
+ html:'<p>El <strong>sandbox</strong> aísla la aplicación del resto del sistema usando <em>bubblewrap</em> y espacios de nombres del kernel. Por defecto, la app no ve tus archivos personales. Solo accede a lo que sus <strong>permisos</strong> declaran.</p><p>Cuando necesita un archivo, usa un <strong>portal</strong>: aparece el selector de archivos del sistema y tú decides qué compartir.</p>',
+ vis:'sandbox',
+ raw:'<h4 style="margin:18px 0 4px;font-size:.95rem;letter-spacing:.06em">Permisos más comunes</h4>'+VIS.perms()+'<p style="margin-top:14px">Puedes ajustarlos por usuario con <code>flatpak override</code>:</p>'+
+  cmdHTML('flatpak info --show-permissions org.videolan.VLC')+cmdHTML('flatpak override --user --nofilesystem=home org.videolan.VLC')+cmdHTML('flatpak override --user --filesystem=~/Videos org.videolan.VLC')+cmdHTML('flatpak override --user --reset org.videolan.VLC'),
+ tip:{k:'i',h:'Si prefieres una interfaz gráfica, la aplicación <strong>Flatseal</strong> (<code>com.github.tchx84.Flatseal</code>) permite revisar y cambiar permisos con interruptores.'}});
+
+L({id:'f-prac',t:'fp',icon:'play',kick:'Práctica guiada',title:'De cero a una aplicación funcionando',short:'Práctica',
+ html:'<p>Ruta completa en un equipo con Debian o Ubuntu:</p><ol><li><strong>Instala</strong> Flatpak con APT.</li><li><strong>Añade</strong> Flathub y reinicia la sesión.</li><li><strong>Busca</strong> la aplicación y copia su ID.</li><li><strong>Instala</strong> y <strong>ejecuta</strong>.</li><li>Revisa sus <strong>permisos</strong> y, al terminar, <strong>desinstala</strong> y limpia.</li></ol>',
+ term:['$ sudo apt install flatpak','Setting up flatpak ...','$ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo','# cierra sesión y vuelve a entrar','$ flatpak search vlc','VLC  Multimedia player  org.videolan.VLC  stable  flathub','$ flatpak install flathub org.videolan.VLC','Do you want to install it? [Y/n]: y','Installation complete.','$ flatpak run org.videolan.VLC','# se abre VLC','$ flatpak info --show-permissions org.videolan.VLC','[Context]','shared=network;ipc;','sockets=x11;pulseaudio;wayland;','$ flatpak uninstall org.videolan.VLC','Uninstall complete.','$ flatpak uninstall --unused','Nothing unused to uninstall'],
+ tip:{k:'g',h:'Con esto ya sabes instalar, ejecutar, inspeccionar y quitar una aplicación Flatpak.'}});
+
+L({id:'f-pros',t:'fp',icon:'shield',kick:'Balance',title:'Ventajas y desventajas de Flatpak',short:'Balance',
+ raw:'<div class="grid2"><div class="pc pro"><h4>'+ic('check')+' VENTAJAS</h4><ul><li>Una sola aplicación funciona en muchas distribuciones.</li><li>Versiones recientes sin esperar a tu próxima release.</li><li>Sandbox con permisos que puedes revisar y limitar.</li><li>Se instala sin root con <code>--user</code>.</li><li>Las apps no rompen el sistema ni entre sí.</li><li>Es fácil volver a una versión anterior.</li></ul></div><div class="pc con"><h4>'+ic('warn')+' DESVENTAJAS</h4><ul><li>Ocupa más disco por los runtimes.</li><li>La primera descarga es más pesada.</li><li>La integración con temas y fuentes puede variar.</li><li>Los permisos estrictos a veces limitan funciones.</li><li>No sirve para herramientas de sistema ni de terminal.</li><li>Algunas apps no son publicadas por su autor original.</li></ul></div></div>'});
+
+/* ---------- RENDER LECCIONES ---------- */
+function lessonHTML(l){
+  var h='<article class="card'+(l.t==='fp'?' v-theme':'')+'" id="'+l.id+'" data-l="'+l.id+'"><div class="card-h"><div class="ico">'+ic(l.icon)+'</div><div><div class="kick">'+esc(l.kick)+'</div><h3>'+esc(l.title)+'</h3></div></div><div class="card-b">';
+  if(l.html)h+=l.html;
+  if(l.vis)h+=VIS[l.vis]();
+  if(l.cmds)h+=l.cmds.map(cmdHTML).join('');
+  if(l.raw)h+=l.raw;
+  if(l.term)h+=termHTML(l.term,l.t==='fp'?'usuario@nexus: ~ (flatpak)':'usuario@nexus: ~ (apt)');
+  if(l.tip)h+='<div class="tip '+l.tip.k+'">'+ic(l.tip.k==='g'?'check':l.tip.k==='i'?'info':'warn')+'<span>'+l.tip.h+'</span></div>';
+  h+='</div><div class="card-f"><button type="button" class="mark" data-mark="'+l.id+'">'+ic('check')+' <span>Marcar como vista</span></button></div></article>';
+  return h;
+}
+function renderLessons(){
+  ['apt','fp'].forEach(function(t){
+    var list=LES.filter(function(l){return l.t===t});
+    $(t==='apt'?'#lessApt':'#lessFp').innerHTML=list.map(lessonHTML).join('');
+    $(t==='apt'?'#idxApt':'#idxFp').innerHTML=list.map(function(l,i){return '<button type="button" data-jump="'+l.id+'" id="ix-'+l.id+'">'+(i+1)+'. '+esc(l.short)+'</button>'}).join('');
+  });
+}
+
+/* ---------- PROGRESO ---------- */
+var KEY='nexus-linux-progreso-v1';
+var S={done:{},quiz:false,best:null};
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object'){S.done=p.done||{};S.quiz=!!p.quiz;S.best=p.best==null?null:p.best}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function refresh(){
+  var total=LES.length+1,n=Object.keys(S.done).filter(function(k){return S.done[k]}).length+(S.quiz?1:0);
+  var pct=Math.round(n/total*100);
+  $('#barTop').style.width=pct+'%';$('#barHero').style.width=pct+'%';$('#pillP').textContent=pct+'%';
+  $('#barWrap').setAttribute('aria-valuenow',pct);
+  $('#progTxt').textContent=n+' de '+total+' · '+pct+'%';
+  var a=LES.filter(function(l){return l.t==='apt'}),f=LES.filter(function(l){return l.t==='fp'});
+  var ad=a.filter(function(l){return S.done[l.id]}).length,fd=f.filter(function(l){return S.done[l.id]}).length;
+  $('#pA').textContent='APT '+ad+'/'+a.length;$('#pF').textContent='Flatpak '+fd+'/'+f.length;
+  $('#pQ').textContent=S.quiz?('Quiz: mejor '+S.best+'/100'):'Quiz pendiente';
+  LES.forEach(function(l){
+    var on=!!S.done[l.id],c=document.getElementById(l.id),b=$('[data-mark="'+l.id+'"]'),ix=document.getElementById('ix-'+l.id);
+    if(c)c.classList.toggle('done',on);
+    if(b){b.classList.toggle('on',on);b.querySelector('span').textContent=on?'Vista':'Marcar como vista'}
+    if(ix)ix.classList.toggle('d',on);
+  });
+}
+
+/* ---------- NAVEGACIÓN ---------- */
+function go(id){var e=document.getElementById(id);if(e)e.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+function spy(){
+  var ids=['inicio','apt','quiz','flatpak','comparar','glosario','fin'],cur=ids[0],y=window.scrollY+130;
+  ids.forEach(function(i){var e=document.getElementById(i);if(e&&e.offsetTop<=y)cur=i});
+  $$('#nav button').forEach(function(b){var on=b.getAttribute('data-go')===cur;b.classList.toggle('on',on);if(on&&!b._o){}b._o=on});
+  var act=$('#nav button.on');if(act&&act!==spy.last){spy.last=act;var n=$('#nav');if(n.scrollWidth>n.clientWidth){n.scrollTo({left:act.offsetLeft-n.clientWidth/2+act.clientWidth/2,behavior:'auto'})}}
+}
+var tk=false;window.addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(function(){spy();tk=false})}},{passive:true});
+
+document.addEventListener('click',function(ev){
+  var t=ev.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-go')){go(t.getAttribute('data-go'));return}
+  if(t.hasAttribute('data-jump')){go(t.getAttribute('data-jump'));return}
+  if(t.hasAttribute('data-c')){doCopy(t,COPY[+t.getAttribute('data-c')]);return}
+  if(t.hasAttribute('data-sim')){var id=+t.getAttribute('data-sim');simulate(document.getElementById('tb'+id),TERMS[id]);return}
+  if(t.hasAttribute('data-mark')){var k=t.getAttribute('data-mark');S.done[k]=!S.done[k];save();refresh();return}
+});
+
+/* ---------- QUIZ ---------- */
+var QUIZ=[
+ {q:'¿Qué comando actualiza la lista de paquetes disponibles sin instalar nada?',o:['sudo apt update','sudo apt upgrade','sudo apt full-upgrade','sudo apt autoremove'],a:0,e:'update solo refresca el catálogo desde los repositorios. upgrade y full-upgrade sí modifican los paquetes instalados.'},
+ {q:'¿Qué diferencia hay entre remove y purge?',o:['No hay ninguna diferencia','purge también elimina los archivos de configuración','remove también borra tus datos personales','purge solo funciona con archivos .deb'],a:1,e:'remove conserva la configuración del paquete; purge la elimina también. Ninguno borra los datos de tu carpeta personal.'},
+ {q:'¿Para qué sirve apt autoremove?',o:['Para actualizar el kernel','Para buscar paquetes por nombre','Para eliminar dependencias que ya nadie necesita','Para añadir un repositorio nuevo'],a:2,e:'autoremove quita las dependencias huérfanas, instaladas automáticamente y que ya no usa ningún paquete.'},
+ {q:'¿Qué comando muestra la ficha detallada de un paquete (versión, dependencias, descripción)?',o:['apt list htop','apt show htop','apt search htop','apt policy htop'],a:1,e:'apt show presenta versión, tamaño, dependencias, página web y descripción. search solo lista coincidencias.'},
+ {q:'¿Qué es un repositorio en APT?',o:['Un programa que ejecuta aplicaciones aisladas','Un archivo de configuración del kernel','Un servidor que almacena paquetes y su índice','Una carpeta con tus descargas'],a:2,e:'Un repositorio es un servidor con paquetes .deb y un índice firmado. Se configura en sources.list y sources.list.d.'},
+ {q:'¿En qué se diferencia full-upgrade de upgrade?',o:['full-upgrade puede instalar y eliminar paquetes para completar la actualización','full-upgrade solo actualiza el kernel','upgrade elimina paquetes y full-upgrade no','No se diferencian'],a:0,e:'upgrade nunca elimina paquetes. full-upgrade sí puede hacerlo si es necesario, por eso conviene leer la lista antes de aceptar.'},
+ {q:'Aparece «E: Could not get lock /var/lib/dpkg/lock-frontend». ¿Qué significa?',o:['El paquete no existe','Otro proceso está usando APT o dpkg','No tienes conexión a internet','El disco está lleno'],a:1,e:'Otro proceso, como el actualizador automático, tiene bloqueado APT. Espera a que termine antes de reintentar.'},
+ {q:'¿Qué comando busca paquetes relacionados con la palabra «editor»?',o:['apt find editor','apt show editor','apt search editor','apt install editor'],a:2,e:'apt search busca en nombres y descripciones. apt show necesita el nombre exacto de un paquete.'},
+ {q:'¿Cómo ves qué paquetes tienen una actualización pendiente?',o:['apt list --upgradable','apt list --removable','apt show --upgrade','apt purge --list'],a:0,e:'apt list --upgradable muestra los paquetes con versión nueva disponible, después de haber ejecutado apt update.'},
+ {q:'¿Qué archivo y carpeta definen los repositorios que usa APT?',o:['/etc/hosts y /etc/fstab','/etc/apt/sources.list y /etc/apt/sources.list.d/','/var/log/apt y /tmp','/usr/bin/apt y /usr/lib'],a:1,e:'APT lee /etc/apt/sources.list y los archivos de /etc/apt/sources.list.d/ para saber a qué repositorios consultar.'}
+];
+var qs=[],qi=0,ok=0,ans=[],locked=false;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function startQuiz(){
+  qs=QUIZ.map(function(q){var ord=shuffle([0,1,2,3]);return {q:q.q,o:ord.map(function(i){return q.o[i]}),a:ord.indexOf(q.a),e:q.e}});
+  qi=0;ok=0;ans=[];locked=false;renderQ();
+}
+function dots(cur){return '<div class="dots" aria-hidden="true">'+qs.map(function(_,i){var c=i<ans.length?(ans[i]===qs[i].a?'c':'w'):(i===cur?'n':'');return '<i class="'+c+'"></i>'}).join('')+'</div>'}
+function renderQ(){
+  var q=qs[qi],L4=['A','B','C','D'];
+  $('#quizBox').innerHTML='<div class="q-top"><span>Pregunta <b>'+(qi+1)+'</b> de '+qs.length+'</span><span>Puntos: <b>'+(ok*10)+'</b>/100</span></div>'+dots(qi)+
+   '<div class="q-t" id="qt" tabindex="-1">'+esc(q.q)+'</div><div class="opts" role="group" aria-labelledby="qt">'+
+   q.o.map(function(o,i){return '<button type="button" class="opt" data-o="'+i+'"><span class="l">'+L4[i]+'</span><span class="tx">'+esc(o)+'</span></button>'}).join('')+
+   '</div><div id="fb" aria-live="polite"></div><div class="q-nav"><button type="button" class="btn p" id="qn" disabled>'+(qi===qs.length-1?'Ver resultado':'Siguiente')+' '+ic('arrow')+'</button></div>';
+  locked=false;
+}
+function pick(i){
+  if(locked)return;locked=true;
+  var q=qs[qi],good=i===q.a;ans.push(i);if(good)ok++;
+  $$('#quizBox .opt').forEach(function(b,k){b.disabled=true;if(k===q.a)b.classList.add('ok');else if(k===i)b.classList.add('no');else b.classList.add('dim')});
+  $('#fb').innerHTML='<div class="fb '+(good?'ok':'no')+'"><b>'+(good?'Correcto, +10 puntos':'Incorrecto')+'</b>'+esc(q.e)+'</div>';
+  $('#qn').disabled=false;
+  var d=$$('#quizBox .dots i');if(d[qi])d[qi].className=good?'c':'w';
+  $('#quizBox .q-top b:last-child').textContent=ok*10;
+}
+function result(){
+  var sc=ok*10,C=2*Math.PI*70;
+  S.quiz=true;S.best=Math.max(S.best==null?0:S.best,sc);save();refresh();
+  var msg=sc===100?['Dominas APT','Puntuación perfecta. Estás listo para el Tema 2.']:sc>=70?['Muy buen resultado','Tienes una base sólida. Revisa las explicaciones de lo que fallaste.']:sc>=40?['Vas por buen camino','Repasa las lecciones de los comandos y vuelve a intentarlo.']:['Hay que repasar','Vuelve a las lecciones de APT y repite el quiz cuando quieras.'];
+  $('#quizBox').innerHTML='<div class="res"><div class="ring"><svg viewBox="0 0 170 170" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22e4ff"/><stop offset="1" stop-color="#a85cff"/></linearGradient></defs><circle class="bgc" cx="85" cy="85" r="70"/><circle class="fgc" cx="85" cy="85" r="70" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'" id="rfg"/></svg><div class="num"><div><span id="rn">0</span><small>de 100</small></div></div></div><h3>'+msg[0]+'</h3><p>'+ok+' de '+qs.length+' respuestas correctas. '+msg[1]+'</p><div class="rev">'+
+   qs.map(function(q,i){var g=ans[i]===q.a;return '<div class="rv '+(g?'ok':'no')+'"><b>'+(i+1)+'. '+esc(q.q)+'</b><span>'+(g?'Acertaste: ':'Tu respuesta: '+esc(q.o[ans[i]])+' · Correcta: ')+esc(q.o[q.a])+'</span></div>'}).join('')+
+   '</div><div class="cta"><button type="button" class="btn p" id="qr">'+ic('refresh')+' Repetir quiz</button><button type="button" class="btn f" data-go="flatpak">'+ic('box')+' Ir a Flatpak</button></div></div>';
+  var fg=$('#rfg'),rn=$('#rn');
+  requestAnimationFrame(function(){fg.style.strokeDashoffset=C*(1-sc/100)});
+  var t0=null;function step(ts){if(t0==null)t0=ts;var p=reduce?1:Math.min(1,(ts-t0)/1100);rn.textContent=Math.round(sc*p);if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step);
+  $('#quizBox').scrollIntoView({block:'nearest'});
+}
+$('#quizBox').addEventListener('click',function(ev){
+  var o=ev.target.closest('.opt');if(o){pick(+o.getAttribute('data-o'));return}
+  if(ev.target.closest('#qn')){if(qi<qs.length-1){qi++;renderQ();$('#qt').focus({preventScroll:true})}else result();return}
+  if(ev.target.closest('#qr')){startQuiz();go('quiz')}
+});
+
+/* ---------- COMPARAR ---------- */
+var VS=[
+ ['Qué instala','Paquetes .deb del sistema: apps, librerías, servicios, kernel','Aplicaciones de escritorio con su runtime'],
+ ['Origen','Repositorios de tu distribución','Flathub u otros remotos'],
+ ['Dependencias','Compartidas con todo el sistema','Runtimes compartidos entre apps Flatpak'],
+ ['Aislamiento','Sin sandbox; la app actúa con tus permisos','Sandbox con permisos declarados'],
+ ['Versiones','Las de tu release: estables, a veces antiguas','Suelen ser más recientes, publicadas por el desarrollador'],
+ ['Espacio en disco','Menor: se comparten librerías','Mayor: incluye runtimes'],
+ ['Permisos de root','Necesarios (sudo)','Opcionales con --user'],
+ ['Distribuciones','Debian, Ubuntu y derivadas','Casi cualquier distribución'],
+ ['Ideal para','Sistema base, terminal, servidores, controladores','Aplicaciones de escritorio actualizadas y aisladas']
+];
+$('#vs').innerHTML='<div class="vr vh"><div class="k"></div><div class="a">APT</div><div class="f">FLATPAK</div></div>'+VS.map(function(r){return '<div class="vr"><div class="k">'+esc(r[0])+'</div><div class="a"><span class="tag">APT</span>'+esc(r[1])+'</div><div class="f"><span class="tag">FLATPAK</span>'+esc(r[2])+'</div></div>'}).join('');
+var MET=[['Versiones recientes',55,85],['Aislamiento de apps',25,85],['Ahorro de disco',85,50],['Integración con el sistema',90,65],['Portabilidad entre distros',35,95]];
+$('#meters').innerHTML=MET.map(function(m){return '<div class="mt"><h4>'+m[0]+'</h4><div class="mb a"><span>APT</span><div class="tr"><i data-w="'+m[1]+'"></i></div><span>'+m[1]+'</span></div><div class="mb f"><span>Flatpak</span><div class="tr"><i data-w="'+m[2]+'"></i></div><span>'+m[2]+'</span></div></div>'}).join('');
+function animMeters(){$$('#meters i').forEach(function(i){i.style.width=i.getAttribute('data-w')+'%'})}
+if('IntersectionObserver' in window){var mo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){animMeters();mo.disconnect()}})},{threshold:.2});mo.observe($('#meters'))}else animMeters();
+setTimeout(function(){if(!$('#meters i').style.width)animMeters()},2500);
+
+/* ---------- GLOSARIO ---------- */
+var GL=[
+['APT','apt','Gestor de paquetes de línea de comandos de Debian y derivadas.'],
+['dpkg','apt','Herramienta de bajo nivel que instala, quita y consulta paquetes .deb. APT trabaja encima de ella.'],
+['Paquete .deb','apt','Archivo que contiene un programa, sus metadatos y scripts de instalación.'],
+['Repositorio','apt','Servidor que guarda paquetes y un índice firmado que los describe.'],
+['Índice de paquetes','apt','Catálogo local con los paquetes y versiones disponibles. Se refresca con apt update.'],
+['Dependencia','apt','Paquete que otro necesita para funcionar.'],
+['Dependencia huérfana','apt','Dependencia instalada automáticamente que ya no necesita ningún paquete. Se quita con autoremove.'],
+['sources.list','apt','Archivo en /etc/apt/ que lista los repositorios; la carpeta sources.list.d/ guarda más.'],
+['Componente','apt','Sección de un repositorio: main, contrib, non-free, universe, multiverse o restricted.'],
+['PPA','apt','Archivo personal de paquetes de Ubuntu mantenido por una persona o proyecto.'],
+['Clave GPG','apt','Clave pública con la que APT verifica que un repositorio es auténtico.'],
+['Espejo (mirror)','apt','Copia de un repositorio en otro servidor, útil para descargar más rápido.'],
+['sudo','apt','Comando que ejecuta otro con permisos de administrador.'],
+['Purge','apt','Eliminar un paquete junto con sus archivos de configuración.'],
+['Flatpak','fp','Sistema para distribuir y ejecutar aplicaciones de escritorio aisladas en cualquier distribución.'],
+['Flathub','fp','Repositorio principal de aplicaciones Flatpak.'],
+['Remoto (remote)','fp','Origen configurado desde el que Flatpak descarga aplicaciones, como Flathub.'],
+['ID de aplicación','fp','Nombre único con formato de dominio invertido, por ejemplo org.videolan.VLC.'],
+['Runtime','fp','Conjunto de librerías base compartidas por varias aplicaciones Flatpak.'],
+['SDK','fp','Runtime ampliado con herramientas para compilar y desarrollar aplicaciones.'],
+['Sandbox','fp','Entorno aislado donde corre la aplicación con acceso limitado al sistema.'],
+['bubblewrap','fp','Herramienta de aislamiento que usa Flatpak para crear el sandbox.'],
+['Portal','fp','Servicio que permite a una app aislada pedir recursos, como un archivo, con tu aprobación.'],
+['Permiso','fp','Acceso que una aplicación declara necesitar: red, audio, carpetas, dispositivos.'],
+['Override','fp','Cambio que haces tú a los permisos por defecto de una aplicación.'],
+['Rama (branch)','fp','Línea de versiones de una aplicación o runtime, como stable.'],
+['OSTree','fp','Tecnología que Flatpak usa para guardar y actualizar archivos sin duplicar lo que no cambia.'],
+['Flatseal','fp','Aplicación gráfica para revisar y modificar permisos de apps Flatpak.']
+];
+function renderGl(q){
+  q=(q||'').toLowerCase().trim();
+  var r=GL.filter(function(g){return !q||(g[0]+' '+g[2]).toLowerCase().indexOf(q)>-1});
+  $('#gl').innerHTML=r.map(function(g){return '<div class="gi '+g[1]+'"><dt><span>'+esc(g[0])+'</span><small>'+(g[1]==='apt'?'APT':'FLATPAK')+'</small></dt><dd>'+esc(g[2])+'</dd></div>'}).join('');
+  $('#gEmpty').hidden=r.length>0;
+}
+$('#gq').addEventListener('input',function(e){renderGl(e.target.value)});
+
+/* ---------- CHULETA ---------- */
+var CH=[['APT',['sudo apt update','sudo apt upgrade','sudo apt full-upgrade','sudo apt install paquete','sudo apt remove paquete','sudo apt purge paquete','sudo apt autoremove','apt search palabra','apt show paquete','apt list --upgradable']],['Flatpak',['flatpak --version','flatpak remotes','flatpak search nombre','flatpak install flathub ID','flatpak list','flatpak info ID','flatpak run ID','flatpak update','flatpak uninstall ID','flatpak uninstall --unused']]];
+$('#cheat').innerHTML=CH.map(function(c,i){return '<div><h4 style="font-size:.9rem;letter-spacing:.1em;color:var('+(i?'--violet':'--cyan')+');margin-bottom:6px">'+c[0]+'</h4>'+c[1].map(cmdHTML).join('')+'</div>'}).join('');
+
+/* ---------- REINICIAR ---------- */
+$('#reset').addEventListener('click',function(){S={done:{},quiz:false,best:null};save();refresh();startQuiz();toast('Progreso reiniciado')});
+
+/* ---------- FONDO DE CIRCUITOS ---------- */
+(function(){
+  var c=$('#bg'),x=c.getContext('2d');if(!x)return;
+  var W=0,H=0,paths=[],pulses=[],G=56,raf=0;
+  function build(){
+    W=c.width=innerWidth;H=c.height=innerHeight;paths=[];
+    var n=Math.min(46,Math.floor(W*H/24000));
+    for(var i=0;i<n;i++){
+      var px=Math.round(Math.random()*W/G)*G,py=Math.round(Math.random()*H/G)*G,pts=[[px,py]],dir=Math.random()<.5?0:1,segs=2+Math.floor(Math.random()*4);
+      for(var s=0;s<segs;s++){var len=(1+Math.floor(Math.random()*4))*G*(Math.random()<.5?-1:1);if(dir===0)px+=len;else py+=len;pts.push([px,py]);dir^=1}
+      var cum=[0],tot=0;for(var k=1;k<pts.length;k++){tot+=Math.abs(pts[k][0]-pts[k-1][0])+Math.abs(pts[k][1]-pts[k-1][1]);cum.push(tot)}
+      paths.push({pts:pts,cum:cum,tot:tot,hue:[190,215,272][i%3]});
+    }
+    pulses=paths.map(function(p){return {p:p,t:Math.random(),s:.9+Math.random()*1.6}});
+    draw(0);
+  }
+  function at(p,d){var k=1;while(k<p.cum.length-1&&p.cum[k]<d)k++;var a=p.pts[k-1],b=p.pts[k],f=(d-p.cum[k-1])/Math.max(1,p.cum[k]-p.cum[k-1]);return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f]}
+  function draw(dt){
+    x.clearRect(0,0,W,H);
+    x.lineWidth=1;
+    paths.forEach(function(p){
+      x.strokeStyle='hsla('+p.hue+',90%,62%,.13)';x.beginPath();p.pts.forEach(function(q,i){i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1])});x.stroke();
+      x.fillStyle='hsla('+p.hue+',90%,70%,.35)';[p.pts[0],p.pts[p.pts.length-1]].forEach(function(q){x.beginPath();x.arc(q[0],q[1],2.5,0,6.283);x.fill()});
+    });
+    if(reduce)return;
+    pulses.forEach(function(u){
+      u.t+=u.s*dt*.06/Math.max(1,u.p.tot)*10;if(u.t>1.15)u.t=-.1;
+      if(u.t<0||u.t>1)return;
+      var q=at(u.p,u.t*u.p.tot),g=x.createRadialGradient(q[0],q[1],0,q[0],q[1],12);
+      g.addColorStop(0,'hsla('+u.p.hue+',100%,75%,.95)');g.addColorStop(1,'hsla('+u.p.hue+',100%,60%,0)');
+      x.fillStyle=g;x.beginPath();x.arc(q[0],q[1],12,0,6.283);x.fill();
+    });
+  }
+  var last=0;
+  function loop(ts){raf=requestAnimationFrame(loop);var dt=Math.min(50,ts-last);last=ts;draw(dt)}
+  build();
+  if(!reduce)raf=requestAnimationFrame(loop);
+  var rt,lw=innerWidth;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(innerWidth!==lw||Math.abs(innerHeight-H)>160){lw=innerWidth;build()}},200)});
+  document.addEventListener('visibilitychange',function(){if(document.hidden){cancelAnimationFrame(raf)}else if(!reduce){last=performance.now();raf=requestAnimationFrame(loop)}});
+})();
+
+/* ---------- TERMINAL DEL HERO ---------- */
+var HERO=['$ sudo apt update','Hit:1 http://deb.debian.org/debian bookworm InRelease','Reading package lists... Done','$ sudo apt install htop','Setting up htop ...','$ flatpak install flathub org.videolan.VLC','Installation complete.','$ flatpak run org.videolan.VLC','# la app arranca en su sandbox'];
+async function heroLoop(){
+  var b=$('#heroTerm');
+  if(reduce){b.classList.remove('cur');b.innerHTML=HERO.map(lineHTML).join('');return}
+  while(true){await simulate(b,HERO);await sleep(3200)}
+}
+
+/* ---------- INICIO ---------- */
+$('#logoIco').innerHTML=ic('box');
+renderLessons();
+fillIcons(document);
+renderGl('');
+startQuiz();
+refresh();
+spy();
+heroLoop();
+})();
+</script>
+
+</body></html>
